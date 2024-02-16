@@ -8,11 +8,12 @@ import useComment from "@/utils/hooks/useComment";
 import CommentsLengthChart from "@/components/commentsLengthChart";
 import CommentsOriginChart from "@/components/commentsOriginChart";
 import { useTranslation } from "next-i18next";
+import Switch from "@/components/input/switch";
 
 export default function Home() {
   const { i18n } = useTranslation("common")
   const [post, setPost] = useState(undefined);
-  const [lang, setLang] = useState("en")
+  const [isZh, setIsZh] = useState(i18n.language === "zh");
   
   const handlePostClick = (event) => {
     setPost(event.data)
@@ -23,21 +24,19 @@ export default function Home() {
   }
 
   const changeLanguage = () => {
-    const locale = lang === "en" ? "zh" : "en"
-    setLang(locale)
-    i18n.changeLanguage(locale)
+    const newLang = isZh ? "en" : "zh";
+    i18n.changeLanguage(newLang);
+    setIsZh(!isZh);
   }
 
   return (
     <div style={{ height: "100vh", width: "100vw", display: "flex", flexDirection: "column" }}>
       <div style={{ height: "5%", padding: "4px", display: "flex", justifyContent: "space-between", alignItems: "center", backgroundColor: "beige" }}>
         <span>Next JS Application by Jaypee Tan</span>
-        <span
-          onClick={changeLanguage} 
-          style={{ border: "1px solid black", borderRadius: "20px", padding: "4px 10px", cursor: "pointer" }
-        }>
-          {lang.toUpperCase()}
-        </span>
+        <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+          <span>{isZh ? "Simplified Chinese" : "English"}</span>
+          <Switch handleOnChange={changeLanguage} isChecked={isZh}/>
+        </div>
       </div>
       <div style={{ height: "95%", width: "100vw", display: "flex", gap: "12px" }}>
         <PostsContainer post={post} handlePostClick={handlePostClick} />
